@@ -1,0 +1,174 @@
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script> 
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js" integrity="sha256-VBLiveTKyUZMEzJd6z2mhfxIqz3ZATCuVMawPZGzIfA=" crossorigin="anonymous"></script> 
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous"/>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous"/> 
+<div id="lane-holder">
+</div>
+<div id="control-holder">
+        <button class="btn btn-primary" type="button" data-toggle="modal" data-id="-1" data-target="#edit-project">New Project</button>
+        <button class="btn btn-success" type="button" onclick="showAllProjects()">Show All Projects</button>
+        <div class="btn-group" role="group">
+            <button class="btn btn-info" type="button" onclick="showMyProjects()">My Projects</button>
+            <div class="btn-group" role="group">
+                <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown">Their Projects</button>
+                <div class="dropdown-menu people-menu">
+                </div>
+            </div>
+        </div>
+        <div class="btn-group" role="group">
+            <button class="btn btn-secondary" type="button" onclick="showDueProjects()">Projects Due</button>
+            <button class="btn btn-secondary dropdown-toggle dropdown-toggle-split" type="button" data-toggle="dropdown"></button>
+            <div class="dropdown-menu">
+                <button class="dropdown-item" type="button" onclick="showSoonProjects()"><span class="badge badge-warning"><i class="fas fa-exclamation-triangle"></i></span> Due Soon</button>
+                <button class="dropdown-item" type="button" onclick="showLateProjects()"><span class="badge badge-danger"><i class="fas fa-skull-crossbones"></i></span> Overdue</button>
+            </div>
+        </div>
+        <div class="btn-group" role="group">
+            <button class="btn btn-success" type="button" onclick="showAllProjectDetails()">Show All Details</button>
+            <button class="btn btn-danger" type="button" onclick="hideAllProjectDetails()">Hide All Details</button>
+        </div>
+    </div>
+<div id="modal-holder">
+    <div class="modal" id="edit-project" role="dialog" tab-index="-1" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Project #</h5>
+                    <h5 class="modal-number">1</h5>
+                    <button class="close" aria-label="Close" type="button" data-dismiss="modal"><span aria-hidden="true">X</span></button>
+                </div>
+                <div class="modal-body was-validated">
+                    <div class="form-row">
+                        <div class="col form-group">
+                            <label for="Title">Project Title</label><input class="form-control required" id="Title"/>
+                        </div>
+                        <div class="col form-group">
+                            <label for="RFNumber">RF Number</label><input class="form-control required" id="RFNumber"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Description">Description</label>
+                        <textarea class="form-control required" id="Description" rows="3"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="col form-group">
+                            <label for="Lane">Status</label>
+                            <select class="form-control required" id="Lane"></select>
+                        </div>
+                        <div class="col form-group">
+                            <label for="Category">Category</label>
+                            <select class="form-control required" id="Category"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ResponsiblePersonId">Person Responsible</label>
+                        <select class="form-control required" id="ResponsiblePersonId"></select>
+                    </div>
+                    <div class="form-row">
+                        <div class="col form-group">
+                            <label for="StartDate">Start Date</label>
+                            <input class="form-control required" id="StartDate" type="date" placeholder="YYYY-MM-DD"/>
+                        </div>
+                        <div class="col form-group">
+                            <label for="DueDate">Due Date</label>
+                            <input class="form-control required" id="DueDate" type="date" placeholder="YYYY-MM-DD"/>
+                        </div>
+                        <div class="col form-group">
+                            <label for="CompletedDate">Completed Date</label>
+                            <input class="form-control" id="CompletedDate" type="date" placeholder="YYYY-MM-DD"/>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col form-group">
+                            <label for="PredictedHoursTaken">Predicted Hours Taken to Complete</label>
+                            <input class="form-control required" id="PredictedHoursTaken" type="number" min="1"/>
+                        </div>
+                        <div class="col form-group">
+                            <label for="ActualHoursTaken">Actual Hours Taken to Complete</label>
+                            <input class="form-control" id="ActualHoursTaken" type="number"/>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <div class="form-row mb-3" id="tasksHeader">
+                            <h5 class="col">Tasks</h5>
+                            <div class="col-sm-2">
+                                <button class="btn btn-primary btn-block" id="task-add" type="button"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+                        <div id="projectTasks">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"> 
+                    <button class="btn btn-danger" type="button" id="delete-btn" style="display: none;">Delete</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary" id="save-btn" type="button">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="addtask-holder">
+    <div class="form-row task mb-3" style="display: none;">
+        <div class="input-group col">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                <input type="checkbox" class="form-check task-complete"/>
+                </div>
+            </div>
+            <textarea type="text" maxlength="255" class="form-control required task-title"></textarea>
+            <div class="input-group-append">
+                <h6 class="input-group-text countdown">255</h6>
+            </div>
+        </div>
+        <div class="col-3">
+            <label class="form-label">Due Date</label>
+            <input class="form-control required task-date" type="date" placeholder="YYYY-MM-DD"/>
+        </div>
+        <div class="col-2">
+            <button type="button" class="btn btn-outline-primary btn-block task-edit" data-id="0" data-project="0"><i class="far fa-edit"></i></button>
+            <button type="button" class="btn btn-outline-danger btn-block task-delete" data-id="0"><i class="far fa-trash-alt"></i></button>
+        </div>
+    </div>
+</div>
+<div class="project-holder">
+    <div class="card project" draggable="true" ondragstart="drag(event)" style="display: none;">
+        <div class="card-header project-header">
+            <a class="project-collapse" data-toggle="collapse">
+                <h6 class="card-title project-title">
+                </h6>
+            </a>
+        </div>
+        <div class="card-body project-body collapse">
+            <div class="row">
+                <div class="col">
+                    <p>Category: <span class="project-category"></span></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="project-person">
+                    </div>
+                </div>
+            </div>
+        </div> 
+        <div class="card-footer project-footer"> 
+            <button type="button" class="btn btn-primary float-right project-btn" data-toggle="modal" data-target="#edit-project">Edit</button>
+        </div> 
+    </div> 
+</div>
+<html xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+    <head>
+        <!--[if gte mso 9]>
+            <xml>
+                <mso:CustomDocumentProperties>
+                <mso:_dlc_DocId msdt:dt="string">P2YQ7UXUKTQC-2006689560-8</mso:_dlc_DocId>
+                <mso:_dlc_DocIdItemGuid msdt:dt="string">8db633ad-5684-482b-a261-385e1c7c5a8b</mso:_dlc_DocIdItemGuid>
+                <mso:_dlc_DocIdUrl msdt:dt="string">https://wessexwater.sharepoint.com/sites/wx-ops-bsc/_layouts/15/DocIdRedir.aspx?ID=P2YQ7UXUKTQC-2006689560-8, P2YQ7UXUKTQC-2006689560-8</mso:_dlc_DocIdUrl>
+                </mso:CustomDocumentProperties>
+            </xml>
+        <![endif]-->
+    </head>
+</html>
