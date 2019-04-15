@@ -109,7 +109,7 @@ function GET(apiURL, callback){
             headers: { "Accept": "application/json;odata=verbose" },
             success: function(data){
                 if(data.d.results){
-                    results = results.concat(results, data.d.results);
+                    $.merge(results, data.d.results);
                     if(data.d.__next){
                         fullURL = data.d.__next;
                         loadData();
@@ -176,6 +176,8 @@ function POST(listName, thisData, callback){
     });
 }
 
+
+//Code below is the functions that control the filtering of projects in the UI.
 function showMyProjects(){
     var myID = _spPageContextInfo.userId;
     $(".project").each(function(index,project){
@@ -280,11 +282,11 @@ $(document).ready(function(){
         $("#lane-holder").children().remove();
 
 //Load swim lanes and cards on to lane holder by nesting the loading of the cards inside the callback of the loading of the lanes.
-        var listLanes = "/_api/web/lists/getbytitle('KanbanBoardLanes')/items";
-        var listProjects = "/_api/web/lists/getbytitle('KanbanBoardProjects')/items";
-        var listTasks = "/_api/web/lists/getbytitle('KanbanBoardTasks')/items";
-        var listCategories = "/_api/web/lists/getbytitle('KanbanBoardCategories')/items";
-        var listUsers = "/_api/web/lists/getbytitle('KanbanBoardUsers')/items";
+        const listLanes = "/_api/web/lists/getbytitle('KanbanBoardLanes')/items";
+        const listProjects = "/_api/web/lists/getbytitle('KanbanBoardProjects')/items";
+        const listTasks = "/_api/web/lists/getbytitle('KanbanBoardTasks')/items";
+        const listCategories = "/_api/web/lists/getbytitle('KanbanBoardCategories')/items";
+        const listUsers = "/_api/web/lists/getbytitle('KanbanBoardUsers')/items";
         var callbackLanes = function(data){
             $("#Lane").children().remove();
             for(var i=1; i<data.length+1; i++){
@@ -306,7 +308,10 @@ $(document).ready(function(){
                         thisProject.find(".project-title").text(datapoint.Title);
                         thisProject.find(".project-category").text(datapoint.Category);
                         thisProject.find(".project-btn").data("id",datapoint.ID);
-                        thisProject.find(".project-person").addClass(datapoint.ResponsiblePersonStringId);
+                        $.each(datapoint.ResponsiblePersonStringId.results,function(i, PersonStringID){
+                            thisProject.find(".project-person").addClass(PersonStringID);
+                        });
+                        //thisProject.find(".project-person").addClass(datapoint.ResponsiblePersonStringId.results[0]);
                         thisProject.show();
                         $("#"+datapoint.Lane.replace(/\s/g, '_')).append(thisProject);
                     };
@@ -339,10 +344,10 @@ $(document).ready(function(){
                     });
 // Load the users into the edit project modal form for a dropdown selection.
                     var callbackUsers = function(data){
-                        $("#ResponsiblePersonId").children().remove();
+                        $("#ResponsiblePersonStringId").children().remove();
                         $(".people-menu").children().remove();
                         $.each(data, function(index,datapoint){
-                            $("#ResponsiblePersonId").append('<option value="' + datapoint.PersonId + '">' + datapoint.Title + '</option>');
+                            $("#ResponsiblePersonStringId").append('<option value="' + datapoint.PersonId + '">' + datapoint.Title + '</option>');
                             $(".people-menu").append('<button class="dropdown-item" type="button" onclick="showTheirProjects(' + datapoint.PersonId + ')">' + datapoint.Title + '</button>');
                             var callbackUserHTML = function(html){
                                 $("." + datapoint.PersonId).append(html.Person);
@@ -526,10 +531,8 @@ $(document).ready(function(){
         modal.find(".modal-number").text("");
         modal.find("#delete-btn").hide();
         modal.find(".form-control").each(function(index, field){
-            field.value = "";
-            if($(field).hasClass("required")){
-                $(field).prop("required",true);
-            }
+            $(field).val("");
+            $(field).prop("required",$(field).hasClass("required"));
         });
         $("#projectTasks").children().remove();
         $("#tasksHeader").hide();
@@ -542,6 +545,8 @@ $(document).ready(function(){
                         if(~datapoint.id.indexOf("Date")){
                             var thisDate = moment(data[datapoint.id]);
                             $(datapoint).val(thisDate.format("YYYY-MM-DD")).change();
+                        }else if(~datapoint.id.indexOf("ResponsiblePerson")){
+                            $(datapoint).val(data[datapoint.id].results);
                         }else{
                             $(datapoint).val(data[datapoint.id]).change();
                         }
@@ -642,6 +647,8 @@ $(document).ready(function(){
                                 if(~field.id.indexOf("Date")){
                                     var tempDate = moment(field.value);
                                     mergeData[field.id] = tempDate.format("YYYY-MM-DDThh:mm");
+                                }else if(~field.id.indexOf("ResponsiblePerson")){
+                                    mergeData[field.id] = {"results":$(field).val()};
                                 }else{
                                     mergeData[field.id] = field.value;
                                 }
@@ -690,8 +697,10 @@ $(document).ready(function(){
                                 if(~field.id.indexOf("Date")){
                                     var tempDate = moment(field.value);
                                     postData[field.id] = tempDate.format("YYYY-MM-DDTHH:mm");
+                                }else if(~field.id.indexOf("ResponsiblePerson")){
+                                    postData[field.id] = {"results":$(field).val()};
                                 }else{
-                                    postData[field.id] = field.value;
+                                    postData[field.id] = $(field).val();
                                 }
                             }else{
                                 postData[field.id] = null;

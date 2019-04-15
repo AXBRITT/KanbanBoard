@@ -32,7 +32,7 @@
     </div>
 <div id="modal-holder">
     <div class="modal" id="edit-project" role="dialog" tab-index="-1" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Project #</h5>
@@ -42,10 +42,12 @@
                 <div class="modal-body was-validated">
                     <div class="form-row">
                         <div class="col form-group">
-                            <label for="Title">Project Title</label><input class="form-control required" id="Title"/>
+                            <label for="Title">Project Title</label>
+                            <input class="form-control required" id="Title"/>
                         </div>
                         <div class="col form-group">
-                            <label for="RFNumber">RF Number</label><input class="form-control required" id="RFNumber"/>
+                            <label for="RFNumber">RF Number</label>
+                            <input class="form-control required" id="RFNumber"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -64,7 +66,17 @@
                     </div>
                     <div class="form-group">
                         <label for="ResponsiblePersonId">Person Responsible</label>
-                        <select class="form-control required" id="ResponsiblePersonId"></select>
+                        <select class="form-control required" id="ResponsiblePersonStringId" multiple></select>
+                    </div>
+                    <div class="form-row">
+                        <div class="col form-group">
+                            <label for="IdeaCreator">Idea Creator</label>
+                            <input class="form-control required" id="IdeaCreator"/>
+                        </div>
+                        <div class="col form-group">
+                            <label for="ProjectSponsor">Project Sponsor</label>
+                            <input class="form-control required" id="ProjectSponsor"/>
+                        </div>
                     </div>
                     <div class="form-row">
                         <div class="col form-group">
@@ -90,7 +102,7 @@
                             <input class="form-control" id="ActualHoursTaken" type="number"/>
                         </div>
                     </div>
-                    <div class="container">
+                    <div class="container-fluid">
                         <div class="form-row mb-3" id="tasksHeader">
                             <h5 class="col">Tasks</h5>
                             <div class="col-sm-2">
